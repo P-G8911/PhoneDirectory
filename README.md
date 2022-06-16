@@ -7,7 +7,7 @@ Implemented Phone Directory using Doubly Linked List.
 
 1) Display Your Phone Book
 2) Insert New Contact
-3) Update Details of Existing Contact
+3) Update Details of Existing Contact <br>
     a.Name
     b.Phone Number
     c.G-Mail
