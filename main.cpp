@@ -1,59 +1,57 @@
-/******************************************************************************
-                             PHONEBOOK
-THIS DEMONSTRATES THE PHONEBOOK OF MOBILE PHONES WITH DOUBLY LINKED LISTSO THAT TRAVERSING CAN BE EASY.....
-*******************************************************************************/
-
 #include <iostream>
 #include <cstring>
+#include <regex>
 using namespace std;
+
+int validatePhoneNumber(string number);
+bool isValid(const string &);
+
 class dnode
 {
 public:
-    char number[50];
-    char gmail[40];
-    char name[30];
+    string number;
+    string gmail;
+    string name;
     dnode *prev, *next;
-    dnode(char n[], char r[], char g[])
+    dnode(string n, string r, string g)
     {
-        strcpy(name, n);
-        strcpy(number, r);
-        strcpy(gmail, g);
+        name = n;
+        number = r;
+        gmail = g;
         next = NULL;
         prev = NULL;
     }
-    friend class dlist;
 };
+
 class dlist
 {
     dnode *head, *temp, *ptr;
-
-    dnode *ptr1, *ptr2, *dup;
+    dnode *p1, *p2, *p;
 
 public:
     dnode *prevn;
 
     void insert();
     void sort();
-    void deletecontact(char n[20]);
+    void deletecontact(string n);
     void deletesamenumber();
     void deletesamename();
     void deletesamegmail();
-    void searchbyname(char p[20]);
-    void searchbynumber(char no[30]);
-    void searchbygmail(char g[20]);
-
-
+    void searchbyname(string p);
+    void searchbynumber(string no);
+    void searchbygmail(string g);
     void accept();
     void display();
-    void update(char ch[10]);
+    void update(string ch);
+
     dlist()
     {
         head = NULL;
         temp = NULL;
         ptr = NULL;
-        ptr1 = NULL;
-        ptr2 = NULL;
-        dup = NULL;
+        p1 = NULL;
+        p2 = NULL;
+        p = NULL;
     }
 };
 
@@ -65,18 +63,23 @@ void dlist::accept()
     char ans;
     do
     {
-        cout << "ENTER NAME      :";
+        cout << "Enter Name      : ";
         cin >> name;
-
-        cout << "ENTER NUMBER    :";
+        cout << "Enter Number    : ";
         cin >> number;
-        while (strlen(number) != 10)
+        while (!validatePhoneNumber(number))
         {
-            cout << "ENTER VALID NUMBER  :";
+            cout << "Enter Valid Number  : ";
             cin >> number;
         }
-        cout << "ENTER G-MAIL    :";
+        cout << "Enter G-Mail    : ";
         cin >> gmail;
+        while (!isValid(gmail))
+        {
+            cout << "Enter Valid E-Mail   : ";
+            cin >> gmail;
+        }
+
         temp = new dnode(name, number, gmail);
         if (head == NULL)
         {
@@ -92,7 +95,7 @@ void dlist::accept()
             ptr->next = temp;
             temp->prev = ptr;
         }
-        cout << "DO YOU WANT TO CONTINUE?????????";
+        cout << "Do You Want To Continue?????? ";
         cin >> ans;
     } while (ans == 'y');
 }
@@ -101,13 +104,12 @@ void dlist::display()
     ptr = head;         // start the node
     while (ptr != NULL) // traverse till last
     {
-        cout << "\n\nNAME  ::\t" << ptr->name;
-        cout << "\nNUMBER::\t+91-" << ptr->number;
-        cout << "\nG-MAIL::\t" << ptr->gmail;
+        cout << "\n\nName  ::\t" << ptr->name;
+        cout << "\nNumber::\t+91-" << ptr->number;
+        cout << "\nG-Mail::\t" << ptr->gmail;
         ptr = ptr->next;
     }
 }
-
 void dlist::insert()
 {
     accept();
@@ -116,28 +118,36 @@ void dlist::sort()
 {
     dnode *i, *j;
     int temp;
-    char n[10];
+    string n;
     for (i = head; i->next != NULL; i = i->next)
     {
         for (j = i->next; j != NULL; j = j->next)
         {
-            temp = strcmp(i->name, j->name);
+            temp = (i->name).compare(j->name);
             if (temp > 0)
             {
-                strcpy(n, i->name);
-                strcpy(i->name, j->name);
-                strcpy(j->name, n);
+                n = i->name;
+                i->name = j->name;
+                j->name = n;
+
+                n = i->gmail;
+                i->gmail = j->gmail;
+                j->gmail = n;
+
+                n = i->number;
+                i->number = j->number;
+                j->number = n;
             }
         }
     }
 }
-void dlist::deletecontact(char s[20])
+void dlist::deletecontact(string s)
 {
     int c = 0;
     ptr = head;
     while (ptr != NULL)
     {
-        if (strcmp(s, ptr->name) == 0)
+        if (s.compare(ptr->name) == 0)
         {
             c = 1;
             break;
@@ -148,234 +158,299 @@ void dlist::deletecontact(char s[20])
         }
         ptr = ptr->next;
     }
-    if (c == 1 && ptr != head && ptr->next != NULL)
+    if (c == 1)
     {
-        ptr->prev->next = ptr->next;
-        ptr->next->prev = ptr->prev;
-        delete (ptr);
-        cout << "YOUR CONTACT IS SUCCESSFULLY DELETED\n\n";
+        if (ptr != head && ptr->next != NULL)
+        {
+            ptr->prev->next = ptr->next;
+            ptr->next->prev = ptr->prev;
+            delete (ptr);
+            cout << "Your Contact is Successfully Deleted\n\n";
+        }
+        if (ptr == head)
+        {
+            head = head->next;
+            head->prev = NULL;
+            delete (ptr);
+            cout << "Your Contact is Successfully Deleted\n\n";
+        }
+        if (ptr->next == NULL)
+        {
+            ptr->prev->next = NULL;
+            ptr->prev = NULL;
+            delete (ptr);
+            cout << "Your Contact is Successfully Deleted\n\n";
+        }
     }
-    if (ptr == head)
+    else if (c == 2)
     {
-        head = head->next;
-        head->prev = NULL;
-        delete (ptr);
-        cout << "YOUR CONTACT IS SUCCESSFULLY DELETED\n\n";
+        cout << "Your Entered Name is Not in The List...";
     }
-    if (ptr->next == NULL)
-    {
-        ptr->prev->next = NULL;
-        ptr->prev = NULL;
-        delete (ptr);
-        cout << "YOUR CONTACT IS SUCCESSFULLY DELETED\n\n";
-    }
-    if (c == 2)
-    {
-        cout << "YOUR ENTERED NAME IS NOT IN THE LIST...";
-    }
+    else
+        cout << "Phone Book is Empty.";
 }
 void dlist::deletesamename()
 {
-    ptr1 = head;
-    while (ptr1 != NULL && ptr1->next != NULL)
+    p1 = head;
+    while (p1 != NULL && p1->next != NULL)
     {
-        ptr2 = ptr1;
-        while (ptr2->next != NULL)
+        p2 = p1;
+        while (p2->next != NULL)
         {
-            if (strcmp(ptr1->name, ptr2->next->name) == 0)
+            if (p1->name.compare(p2->next->name) == 0)
             {
-                dup = ptr2->next;
-                ptr2->next = ptr2->next->next;
-                delete (dup);
+                p = p2->next;
+                p2->next = p2->next->next;
+                if (p->next)
+                    p->next->prev = p2;
+                delete (p);
             }
             else
-            {
-                ptr2 = ptr2->next;
-            }
+                p2 = p2->next;
         }
-        ptr1 = ptr1->next;
+        p1 = p1->next;
     }
 }
 void dlist::deletesamegmail()
 {
-    ptr1 = head;
-    while (ptr1 != NULL && ptr1->next != NULL)
+    p1 = head;
+    while (p1 != NULL && p1->next != NULL)
     {
-        ptr2 = ptr1;
-        while (ptr2->next != NULL)
+        p2 = p1;
+        while (p2->next != NULL)
         {
-            if (strcmp(ptr1->gmail, ptr2->next->gmail) == 0)
+            if (p1->gmail.compare(p2->next->gmail) == 0)
             {
-                dup = ptr2->next;
-                ptr2->next = ptr2->next->next;
-                delete (dup);
+                p = p2->next;
+                p2->next = p2->next->next;
+                delete (p);
             }
             else
             {
-                ptr2 = ptr2->next;
+                p2 = p2->next;
             }
         }
-        ptr1 = ptr1->next;
+        p1 = p1->next;
     }
 }
 void dlist::deletesamenumber()
 {
-    ptr1 = head;
-    while (ptr1 != NULL && ptr1->next != NULL)
+    p1 = head;
+    while (p1 != NULL && p1->next != NULL)
     {
-        ptr2 = ptr1;
-        while (ptr2->next != NULL)
+        p2 = p1;
+        while (p2->next != NULL)
         {
-            if (strcmp(ptr1->number, ptr2->number) == 0)
+            if (p1->number.compare(p2->next->number) == 0)
             {
-                dup = ptr2->next;
-                ptr2->next = ptr2->next->next;
-                delete (dup);
+                p = p2->next;
+                p2->next = p2->next->next;
+                if (p->next)
+                    p->next->prev = p2;
+                delete (p);
             }
             else
             {
-                ptr2 = ptr2->next;
+                p2 = p2->next;
             }
         }
-        ptr1 = ptr1->next;
+        p1 = p1->next;
     }
 }
-void dlist::searchbyname(char na[10])
+void dlist::searchbyname(string na)
 {
     ptr = head;
+    bool ch = false;
     while (ptr != NULL)
     {
-        if (strcmp(na, ptr->name) == 0)
+        if (na.compare(ptr->name) == 0)
         {
-            cout << "NAME FOUND" << endl;
-            cout << "CONTACT DETAILS ARE BELOW:\n"
+            ch = true;
+            cout << "Name Found" << endl;
+            cout << "Contact Details Are Below:\n"
                  << endl;
-            cout << "\n\nNAME  ::\t" << ptr->name;
-            cout << "\nNUMBER::\t+91-" << ptr->number;
-            cout << "\nG-MAIL::\t" << ptr->gmail;
+            cout << "\n\nName  ::\t" << ptr->name;
+            cout << "\nNumber::\t+91-" << ptr->number;
+            cout << "\nG-Mail::\t" << ptr->gmail;
         }
         ptr = ptr->next;
     }
+    if (!ch)
+        cout << "Your Entered Name is Not in The List...";
 }
-void dlist::searchbynumber(char num[20])
+void dlist::searchbynumber(string num)
 {
     ptr = head;
+    bool ch = false;
     while (ptr != NULL)
     {
-        if (strcmp(num, ptr->number) == 0)
+        if (num.compare(ptr->number) == 0)
         {
-            cout << "NUMBER FOUND\n"
+            bool ch = false;
+            cout << "Number Found\n"
                  << endl;
-            cout << "CONTACT DETAILS ARE BELOW:\n"
+            cout << "Contact Details Are Below:\n"
                  << endl;
-            cout << "\n\nNAME  ::\t" << ptr->name;
-            cout << "\nNUMBER::\t+91-" << ptr->number;
-            cout << "\nG-MAIL::\t" << ptr->gmail;
+            cout << "\n\nName  ::\t" << ptr->name;
+            cout << "\nNumber::\t+91-" << ptr->number;
+            cout << "\nG-Mail::\t" << ptr->gmail;
         }
         ptr = ptr->next;
     }
+    if (!ch)
+        cout << "Your Entered Number is Not in The List...";
 }
-void dlist::searchbygmail(char gm[20])
+void dlist::searchbygmail(string gm)
 {
     ptr = head;
+    bool ch = false;
     while (ptr != NULL)
     {
-        if (strcmp(gm, ptr->gmail) == 0)
+        if (gm.compare(ptr->gmail) == 0)
         {
-            cout << "G-MAIL FOUND\n"
+            ch = true;
+            cout << "G-Mail Found\n"
                  << endl;
-            cout << "CONTACT DETAILS ARE BELOW:\n"
+            cout << "Contact Details Are Below:\n"
                  << endl;
-            cout << "\n\nNAME  ::\t" << ptr->name;
-            cout << "\nNUMBER::\t+91-" << ptr->number;
-            cout << "\nG-MAIL::\t" << ptr->gmail;
+            cout << "\n\nName  ::\t" << ptr->name;
+            cout << "\nNumber::\t+91-" << ptr->number;
+            cout << "\nG-Mail::\t" << ptr->gmail;
         }
         ptr = ptr->next;
     }
+    if (!ch)
+        cout << "Your Entered Mail-ID is Not in The List...";
 }
-void dlist::update(char n[20])
+void dlist::update(string n)
 {
     char ans;
     int c;
+    bool ch = false;
     ptr = head;
     while (ptr != NULL)
     {
-        if (strcmp(n, ptr->name) == 0)
+        if (n.compare(ptr->name) == 0)
         {
-
+            ch = true;
             do
             {
-                cout << "\nWHAT DO YOU WANT TO UPDATE?\n1.NAME\n2.PHONE NUMBER\n3.G-MAIL\n";
+                cout << "\nWhat Do You Want to Update?\n1.Name\n2.Phone Number\n3.G-Mail\n";
                 cin >> c;
                 switch (c)
                 {
                 case 1:
-                    cout << "ENTER NEW-NAME=";
+                    cout << "Enter New-Name=";
                     cin >> ptr->name;
                     break;
                 case 2:
-                    cout << "ENTER NEW PHONE-NUMBER?";
+                    cout << "Enter New Phone-Number?";
                     cin >> ptr->number;
-                    while (strlen(ptr->number) != 10)
+                    while (!validatePhoneNumber(ptr->number))
                     {
-                        cout << "ENTER VALID NUMBER  :";
+                        cout << "Enter Valid Number  :";
                         cin >> ptr->number;
                     }
                     break;
                 case 3:
-                    cout << "ENTER NEW G-MAIL";
+                    cout << "Enter New G-Mail";
                     cin >> ptr->gmail;
+                    while (!isValid(ptr->gmail))
+                    {
+                        cout << "Enter Valid E-Mail   : ";
+                        cin >> ptr->gmail;
+                    }
                     break;
                 }
-                cout << "DO YOU WANT TO CONTINUE UPDATING?";
+                cout << "Do You Want to Continue Updating?";
                 cin >> ans;
             } while (ans == 'y');
         }
         ptr = ptr->next;
     }
+    if (!ch)
+        cout << "Your Entered Name is Not in The List...\n";
 }
+
+int validatePhoneNumber(string num)
+{
+    if (num.length() != 10)
+        return 0;
+    for (int i = 0; i < 10; i++)
+        if ((num[i] < '0' || num[i] > '9'))
+            return 0;
+    return 1;
+}
+
+bool isValid(const string &email)
+{
+    int at = 0;
+    int dot = 0;
+    int cnt = 0;
+
+    if (email[0] == '@')
+        return 0;
+
+    for (int i = 0; i < email.length(); i++)
+    {
+        if (email[i] == '@')
+        {
+            at = i;
+            cnt++;
+        }
+
+        if (email[i] == '.')
+            dot = i;
+    }
+
+    if (at == 0 || cnt > 1)
+        return 0;
+
+    return (at < dot);
+};
+
 int main()
 {
-    char n[20];
-    char nam[20];
-    char name[10];
-    char number[10];
-    char gmail[20];
+    string n, nam, name, number, gmail;
     dlist d1;
-    // apply d;
     char ans;
     int ch, a;
-    cout << "**************                                PHONE BOOK                          ********************";
-    cout << "\n\nWHAT IS YOUR NAME?\n";
-    cin.getline(name, 20);
-    cout << "\n\n!!!!!!!!!!!!!!!!!!!!!!!   WELCOME " << name << "   !!!!!!!!!!!!!!!!!!!!!";
-    cout << "\n\n\nLET'S CREATE OUR PHONEBOOK " << name << "  \n\n";
+    cout << "\n**************                                PHONE BOOK                          ********************";
+    cout << "\n\nWhat is Your Name?\n";
+    cin >> name;
+    cout << "\n\n!!!!!!!!!!!!!!!!!!!!!!!   Welcome " << name << "   !!!!!!!!!!!!!!!!!!!!!";
+    cout << "\n\n\nLet's Create Our Phonebook " << name << "  \n\n";
     d1.accept();
     d1.sort();
     do
     {
-        cout << "\n\n\n\n1) DISPLAY YOUR PHONE BOOK\n2) INSERT NEW CONTACT\n3) UPDATE DETAILS ON EXISTING CONTACT\n4) DELETE CONTACT\n5) DELETE SAME NAME IN PHONEBOOK\n6) DELETE SAME NUMBERS IN PHONEBOOK\n7) SEARCH\n";
+        cout << "1) Display Your Phone Book" << endl;
+        cout << "2) Insert New Contact" << endl;
+        cout << "3) Update Details on Existing Contact" << endl;
+        cout << "4) Delete Contact" << endl;
+        cout << "5) Delete Same Name in Phonebook" << endl;
+        cout << "6) Delete Same Number in Phonebook" << endl;
+        cout << "7) Delete Same E-Mail in Phonebook" << endl;
+        cout << "8) Search" << endl;
+
         cin >> ch;
         switch (ch)
         {
+        case 1:
+            d1.display();
+            break;
         case 2:
             d1.insert();
             d1.sort();
             break;
-
-        case 1:
-            // d1.sort();
-            d1.display();
-            break;
         case 3:
-
-            cout << "\n\nENTER THE NAME OF PERSON WHOSE DETAILS YOU WANT TO UPDATE...\n";
+            cout << "\n\nEnter The Name of Person Whose Details You Want to Update...\n";
             cin >> n;
             d1.update(n);
             d1.sort();
             break;
         case 4:
-            cout << "\nENTER THE NAME YOU WANT TO DELETE FROM PHONEBOOK\n";
+            cout << "\nEnter The Name You Want to Delete From Phonebook\n";
             cin >> name;
             d1.deletecontact(name);
             break;
@@ -388,43 +463,51 @@ int main()
             d1.display();
             break;
         case 7:
+            d1.deletesamegmail();
+            d1.display();
+            break;
+        case 8:
             do
             {
-                cout << "1.SEARCH BY NAME\n2.SEARCH BY NUMBER\n3.SEARCH BY GMAIL";
+                cout << "1.Search by Name\n";
+                cout << "2.Search by Number\n";
+                cout << "3.Search by Gmail\n";
                 cin >> a;
                 switch (a)
                 {
                 case 1:
-                    cout << "ENTER THE NAME TO BE SEARCHED\n";
+                    cout << "Enter The Name to be Searched\n";
                     cin >> name;
                     d1.searchbyname(name);
                     break;
                 case 2:
-                    cout << "ENTER THE NAME TO BE SEARCHED\n";
+                    cout << "Enter The Number to be Searched\n";
                     cin >> number;
-                    d1.searchbynumber(number);
+                    while (!validatePhoneNumber(number))
+                        d1.searchbynumber(number);
                     break;
                 case 3:
-                    cout << "ENTER THE NAME TO BE SEARCHED\n";
+                    cout << "Enter The Mail Address to be Searched\n";
                     cin >> gmail;
+                    while (!isValid(gmail))
+                    {
+                        cout << "Enter Valid E-Mail   : ";
+                        cin >> gmail;
+                    }
                     d1.searchbygmail(gmail);
                     break;
                 default:
-                    cout << "\nNO PROPER INPUT GIVEN.....\n";
+                    cout << "\nNo Proper Input Given.....\n";
                 }
-                cout << "DO YOU WANT TO CONTINUE SEARCHING?????????";
+                cout << "Do You Want to Contunue Searching? ";
                 cin >> ans;
             } while (ans == 'y');
 
             break;
-        case 8:
-            d1.deletesamegmail();
-            d1.display();
-            break;
         default:
-            cout << "\nNO PROPER INPUT GIVEN..\n";
+            cout << "\nNo Proper Input Given..\n";
         }
-        cout << "\n\nDO YOU WANT TO CONTINUE OPERATIONS?????????";
+        cout << "\n\nDo You Want to Continue Operations? (Y/N) ";
         cin >> ans;
-    } while (ans == 'y');
+    } while (ans == 'y' || ans == 'Y');
 }
