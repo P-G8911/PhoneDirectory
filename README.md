@@ -1,7 +1,7 @@
 # PhoneDirectory
 
 Implemented Phone Directory using Doubly Linked List. <br>
-  &nbsp; LinkedLists are convenient because it is easy and fast to insert and remove frequently modified items from the list. A doubly-linked list is particularly nice because   you can iterate and search from the front (head) of the end of the list or the back (tail).
+LinkedLists are convenient because it is easy and fast to insert and remove frequently modified items from the list. A doubly-linked list is particularly nice because   you can iterate and search from the front (head) of the end of the list or the back (tail).
 
 # Operations Implemented:
 
