@@ -406,7 +406,7 @@ bool isValid(const string &email)
     if (at == 0 || cnt > 1)
         return 0;
 
-    return (at < dot);
+    return (dot - at > 1);
 };
 
 int main()
