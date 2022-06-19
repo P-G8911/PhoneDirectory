@@ -374,6 +374,8 @@ void dlist::update(string n)
 
 int validatePhoneNumber(string num)
 {
+    if(num[0] == '0')
+        return 0;
     if (num.length() != 10)
         return 0;
     for (int i = 0; i < 10; i++)
@@ -411,6 +413,7 @@ bool isValid(const string &email)
 
 int main()
 {
+    system("cls");
     string n, nam, name, number, gmail;
     dlist d1;
     char ans;
@@ -432,6 +435,7 @@ int main()
         cout << "6) Delete Same Number in Phonebook" << endl;
         cout << "7) Delete Same E-Mail in Phonebook" << endl;
         cout << "8) Search" << endl;
+        cout << "9) Exit" << endl;
 
         cin >> ch;
         switch (ch)
@@ -502,8 +506,11 @@ int main()
                 cout << "Do You Want to Contunue Searching? ";
                 cin >> ans;
             } while (ans == 'y');
-
             break;
+        
+        case 9:
+            exit(0);
+            
         default:
             cout << "\nNo Proper Input Given..\n";
         }
