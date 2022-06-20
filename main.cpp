@@ -1,6 +1,4 @@
-#include <iostream>
-#include <cstring>
-#include <regex>
+#include <bits/stdc++.h>
 using namespace std;
 
 int validatePhoneNumber(string number);
@@ -95,7 +93,7 @@ void dlist::accept()
             ptr->next = temp;
             temp->prev = ptr;
         }
-        cout << "Do You Want To Continue?????? ";
+        cout << "Do You Want To Continue? (y/n) ";
         cin >> ans;
     } while (ans == 'y');
 }
@@ -517,4 +515,6 @@ int main()
         cout << "\n\nDo You Want to Continue Operations? (Y/N) ";
         cin >> ans;
     } while (ans == 'y' || ans == 'Y');
+    
+    return 0;
 }
