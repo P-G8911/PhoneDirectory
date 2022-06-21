@@ -2,7 +2,8 @@
 using namespace std;
 
 int validatePhoneNumber(string number);
-bool isValid(const string &);
+bool isValid(string);
+bool isValidName(string);
 
 class dnode
 {
@@ -63,6 +64,11 @@ void dlist::accept()
     {
         cout << "Enter Name      : ";
         cin >> name;
+        while (!isValidName(name))
+        {
+            cout << "Enter Valid Name  : ";
+            cin >> name;
+        }
         cout << "Enter Number    : ";
         cin >> number;
         while (!validatePhoneNumber(number))
@@ -338,15 +344,20 @@ void dlist::update(string n)
                 switch (c)
                 {
                 case 1:
-                    cout << "Enter New-Name=";
+                    cout << "Enter New-Name : ";
                     cin >> ptr->name;
+                    while (!isValidName(ptr->name))
+                    {
+                        cout << "Enter Valid Name : ";
+                        cin >> ptr->name;
+                    }
                     break;
                 case 2:
                     cout << "Enter New Phone-Number?";
                     cin >> ptr->number;
                     while (!validatePhoneNumber(ptr->number))
                     {
-                        cout << "Enter Valid Number  :";
+                        cout << "Enter Valid Number :";
                         cin >> ptr->number;
                     }
                     break;
@@ -382,7 +393,18 @@ int validatePhoneNumber(string num)
     return 1;
 }
 
-bool isValid(const string &email)
+bool isValidName(string name){
+    
+    for(int i=0; i<name.length(); i++){
+        if(isalpha(name[i]))
+            continue;
+        else
+            return false;
+    }
+    return true;
+}
+
+bool isValid(string email)
 {
     int at = 0;
     int dot = 0;
@@ -419,6 +441,11 @@ int main()
     cout << "\n**************                                PHONE BOOK                          ********************";
     cout << "\n\nWhat is Your Name?\n";
     cin >> name;
+    while (!isValidName(name))
+    {
+        cout << "Enter Valid Name : ";
+        cin >> name;
+    }
     cout << "\n\n!!!!!!!!!!!!!!!!!!!!!!!   Welcome " << name << "   !!!!!!!!!!!!!!!!!!!!!";
     cout << "\n\n\nLet's Create Our Phonebook " << name << "  \n\n";
     d1.accept();
