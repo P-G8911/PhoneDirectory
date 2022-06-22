@@ -56,9 +56,9 @@ public:
 
 void dlist::accept()
 {
-    char number[50];
-    char gmail[40];
-    char name[30];
+    string number;
+    string gmail;
+    string name;
     char ans;
     do
     {
